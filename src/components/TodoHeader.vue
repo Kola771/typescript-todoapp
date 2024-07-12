@@ -10,10 +10,15 @@
       autofocus
       autocomplete="off"
       placeholder="Entrez une tâche"
+      @keyup.enter="emit('add-todo', ($event.target as HTMLImageElement).value)"
     />
   </header>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const emit = defineEmits<{
+  (e: 'add-todo', value: string): void
+}>()
+</script>
 
 <style scoped></style>
