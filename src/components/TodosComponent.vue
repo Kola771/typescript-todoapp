@@ -4,7 +4,7 @@
 
     <TodoMain :taches="todos" />
 
-    <TodoFooter />
+    <TodoFooter :todos="todos" />
   </div>
 </template>
 
@@ -15,11 +15,7 @@ import TodoFooter from '@/components/TodoFooter.vue'
 import type { Todo } from '@/@types'
 import { ref } from 'vue'
 
-const todos = ref<Todo[]>([
-  { id: 1, title: 'Tâche 1', complete: true },
-  { id: 2, title: 'Tâche 2', complete: false },
-  { id: 3, title: 'Tâche 3', complete: false }
-])
+const todos = ref<Todo[]>([])
 
 function addTodo(value: string) {
   todos.value.push({
