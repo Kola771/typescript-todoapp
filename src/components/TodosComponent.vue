@@ -2,7 +2,7 @@
   <div>
     <TodoHeader @add-todo="addTodo" />
 
-    <TodoMain :taches="todos" />
+    <TodoMain :taches="todos" @delete-todo="deleteTodo" @update-todo="updateTodo" @edit-todo="editTodo" />
 
     <TodoFooter :todos="todos" />
   </div>
@@ -18,12 +18,28 @@ import { nanoid } from 'nanoid'
 
 const todos = ref<Todo[]>([])
 
-function addTodo(value: string) {
-  todos.value.push({
-    id: nanoid(),
-    title: value,
-    complete: false
-  })
+// fonction d'ajout d'une tâche
+function addTodo(value: string): void {
+  if (value.trim() !== '') {
+    todos.value.push({
+      id: nanoid(),
+      title: value,
+      complete: false
+    })
+  }
+}
+
+// fonction de suppression d'une tâche
+function deleteTodo(value: Todo): void {
+  todos.value = todos.value.filter((todo) => todo !== value)
+}
+
+function updateTodo(todo: Todo, completedValue: boolean) {
+  todo.complete = completedValue
+}
+
+function editTodo(todo: Todo, value: string) {
+  todo.title = value
 }
 </script>
 
