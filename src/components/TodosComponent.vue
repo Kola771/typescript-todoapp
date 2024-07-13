@@ -14,12 +14,13 @@ import TodoMain from '@/components/TodoMain.vue'
 import TodoFooter from '@/components/TodoFooter.vue'
 import type { Todo } from '@/@types'
 import { ref } from 'vue'
+import { nanoid } from 'nanoid'
 
 const todos = ref<Todo[]>([])
 
 function addTodo(value: string) {
   todos.value.push({
-    id: todos.value.length > 0 ? todos.value.length - 1 : todos.value.length + 1,
+    id: nanoid(),
     title: value,
     complete: false
   })
