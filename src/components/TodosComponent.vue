@@ -2,7 +2,12 @@
   <div>
     <TodoHeader @add-todo="addTodo" />
 
-    <TodoMain :taches="todos" @delete-todo="deleteTodo" @update-todo="updateTodo" @edit-todo="editTodo" />
+    <TodoMain
+      :taches="todos"
+      @delete-todo="deleteTodo"
+      @update-todo="updateTodo"
+      @edit-todo="editTodo"
+    />
 
     <TodoFooter :todos="todos" />
   </div>
@@ -20,13 +25,13 @@ const todos = ref<Todo[]>([])
 
 // fonction d'ajout d'une tâche
 function addTodo(value: string): void {
-  if (value.trim() !== '') {
-    todos.value.push({
-      id: nanoid(),
-      title: value,
-      complete: false
-    })
-  }
+  if (!value.trim().length) return
+
+  todos.value.push({
+    id: nanoid(),
+    title: value,
+    complete: false
+  })
 }
 
 // fonction de suppression d'une tâche

@@ -8,8 +8,15 @@
       </div>
 
       <div class="input-container">
-        <input ref="editRef" type="text" @keyup.enter="finishEdit" @blur="cancelEdit" id="edit-to-input" class="edit"
-          v-model="editInput" />
+        <input
+          ref="editRef"
+          type="text"
+          @keyup.enter="finishEdit"
+          @blur="cancelEdit"
+          id="edit-to-input"
+          class="edit"
+          v-model="editInput"
+        />
         <label class="visualy-hidden" for="edit-to-input">Editer</label>
       </div>
     </li>
@@ -30,7 +37,7 @@ const emit = defineEmits<{
   (e: 'edit-todo', todo: Todo, value: string): void
 }>()
 
-const isTodoCompleted = ref<boolean>(props.todo.complete);
+const isTodoCompleted = ref<boolean>(props.todo.complete)
 // const isTodoCompleted = computed({
 //   get: () => props.todo.complete,
 //   set: (val: boolean) => emit('update-todo', props.todo, val)
@@ -40,7 +47,7 @@ watch(isTodoCompleted, (newVal) => {
   emit('update-todo', props.todo, newVal)
 })
 
-const editRef = ref<HTMLInputElement>(); // élément du dom
+const editRef = ref<HTMLInputElement>() // élément du dom
 const editing = ref<boolean>(false)
 const editText = ref<string>('')
 const editInput = computed({
@@ -51,11 +58,11 @@ const editInput = computed({
 })
 
 async function startEditing() {
-  editing.value = true;
+  editing.value = true
 
   // faire un focus sur le champs de saisie
   await nextTick(() => {
-    editRef.value?.focus();
+    editRef.value?.focus()
   })
 }
 
@@ -72,7 +79,7 @@ function editTodo() {
 }
 
 function cancelEdit() {
-  editing.value = false;
+  editing.value = false
 }
 </script>
 
