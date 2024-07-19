@@ -8,15 +8,8 @@
       </div>
 
       <div class="input-container">
-        <input
-          ref="editRef"
-          type="text"
-          @keyup.enter="finishEdit"
-          @blur="cancelEdit"
-          id="edit-to-input"
-          class="edit"
-          v-model="editInput"
-        />
+        <input ref="editRef" type="text" @keyup.enter="finishEdit" @blur="cancelEdit" id="edit-to-input" class="edit"
+          v-model="editInput" />
         <label class="visualy-hidden" for="edit-to-input">Editer</label>
       </div>
     </li>
@@ -37,7 +30,6 @@ const emit = defineEmits<{
   (e: 'edit-todo', todo: Todo, value: string): void
 }>()
 
-// const isTodoCompleted = ref<boolean>(props.todo.complete)
 const isTodoCompleted = computed({
   get: () => props.todo.complete,
   set: (val: boolean) => emit('update-todo', props.todo, val)
