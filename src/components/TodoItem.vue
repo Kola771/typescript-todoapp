@@ -8,15 +8,9 @@
       </div>
 
       <div class="input-container">
-        <input
-          type="text"
-          @keyup.enter="finishEdit"
-          @blur="cancelEdit"
-          id="edit-to-input"
-          class="edit"
-          v-model="editInput"
-        />
-        <label class="hidden" for="edit-to-input">Editer</label>
+        <input ref="editRef" type="text" @keyup.enter="finishEdit" @blur="cancelEdit" id="edit-to-input" class="edit"
+          v-model="editInput" />
+        <label class="visualy-hidden" for="edit-to-input">Editer</label>
       </div>
     </li>
   </div>
@@ -24,7 +18,7 @@
 
 <script setup lang="ts">
 import type { Todo } from '@/@types'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 
 const props = defineProps<{
   todo: Todo
@@ -36,11 +30,17 @@ const emit = defineEmits<{
   (e: 'edit-todo', todo: Todo, value: string): void
 }>()
 
-const isTodoCompleted = computed({
-  get: () => props.todo.complete,
-  set: (val: boolean) => emit('update-todo', props.todo, val)
+const isTodoCompleted = ref<boolean>(props.todo.complete);
+// const isTodoCompleted = computed({
+//   get: () => props.todo.complete,
+//   set: (val: boolean) => emit('update-todo', props.todo, val)
+// })
+
+watch(isTodoCompleted, (newVal) => {
+  emit('update-todo', props.todo, newVal)
 })
 
+const editRef = ref<HTMLInputElement>(); // élément du dom
 const editing = ref<boolean>(false)
 const editText = ref<string>('')
 const editInput = computed({
@@ -50,8 +50,13 @@ const editInput = computed({
   }
 })
 
-function startEditing() {
-  editing.value = true
+async function startEditing() {
+  editing.value = true;
+
+  // faire un focus sur le champs de saisie
+  await nextTick(() => {
+    editRef.value?.focus();
+  })
 }
 
 function finishEdit() {
@@ -71,4 +76,17 @@ function cancelEdit() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.visualy-hidden {
+  bottom: 0;
+  clip: rect(0 0 0 0);
+  clip-path: 50%;
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+</style>
