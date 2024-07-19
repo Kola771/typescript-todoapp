@@ -72,7 +72,7 @@ function editTodo() {
 }
 
 function cancelEdit() {
-  console.log('cancel edit')
+  editing.value = false;
 }
 </script>
 
