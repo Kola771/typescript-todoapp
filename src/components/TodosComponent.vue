@@ -2,7 +2,13 @@
   <div>
     <TodoHeader @add-todo="addTodo" />
 
-    <TodoMain :taches="filteredTodos" @delete-todo="deleteTodo" @update-todo="updateTodo" @edit-todo="editTodo" />
+    <TodoMain
+      :taches="filteredTodos"
+      @toggle-all-input="toggleAllInput"
+      @delete-todo="deleteTodo"
+      @update-todo="updateTodo"
+      @edit-todo="editTodo"
+    />
 
     <TodoFooter :todos="todos" @delete-completed="deleteCompleted" />
   </div>
@@ -76,6 +82,12 @@ function editTodo(todo: Todo, value: string) {
 // Fonction pour retirer toutes les tâches finies
 function deleteCompleted() {
   todos.value = todos.value.filter((todo) => !todo.complete)
+}
+
+function toggleAllInput(value: boolean) {
+  todos.value.forEach((todo) => {
+    todo.complete = value
+  })
 }
 </script>
 

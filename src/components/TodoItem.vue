@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import type { Todo } from '@/@types'
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 
 const props = defineProps<{
   todo: Todo
@@ -37,14 +37,10 @@ const emit = defineEmits<{
   (e: 'edit-todo', todo: Todo, value: string): void
 }>()
 
-const isTodoCompleted = ref<boolean>(props.todo.complete)
-// const isTodoCompleted = computed({
-//   get: () => props.todo.complete,
-//   set: (val: boolean) => emit('update-todo', props.todo, val)
-// })
-
-watch(isTodoCompleted, (newVal) => {
-  emit('update-todo', props.todo, newVal)
+// const isTodoCompleted = ref<boolean>(props.todo.complete)
+const isTodoCompleted = computed({
+  get: () => props.todo.complete,
+  set: (val: boolean) => emit('update-todo', props.todo, val)
 })
 
 const editRef = ref<HTMLInputElement>() // élément du dom
