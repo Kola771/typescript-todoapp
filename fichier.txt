@@ -2,3 +2,4 @@ npm run format
 npm i @vuese/core
 
 npm i @vueuse/firebase firebase
+npm i vuetify (bibliothèque pour les formulaires de connexion ou d'inscription)

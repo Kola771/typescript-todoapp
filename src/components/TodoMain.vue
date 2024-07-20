@@ -5,8 +5,14 @@
       <label htmlFor="toggle-all-input">Switcher toutes les tâches</label>
     </div>
     <ul class="todo-list">
-      <TodoItem v-for="todo in taches" @delete-todo="emit('delete-todo', todo)" :key="todo.id" :todo="todo"
-        @update-todo="updateTodo" @edit-todo="editTodo" />
+      <TodoItem
+        v-for="todo in taches"
+        @delete-todo="emit('delete-todo', todo)"
+        :key="todo.id"
+        :todo="todo"
+        @update-todo="updateTodo"
+        @edit-todo="editTodo"
+      />
     </ul>
   </main>
 </template>

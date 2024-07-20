@@ -8,8 +8,15 @@
       </div>
 
       <div class="input-container">
-        <input ref="editRef" type="text" @keyup.enter="finishEdit" @blur="cancelEdit" id="edit-to-input" class="edit"
-          v-model="editInput" />
+        <input
+          ref="editRef"
+          type="text"
+          @keyup.enter="finishEdit"
+          @blur="cancelEdit"
+          id="edit-to-input"
+          class="edit"
+          v-model="editInput"
+        />
         <label class="visualy-hidden" for="edit-to-input">Editer</label>
       </div>
     </li>
