@@ -18,7 +18,9 @@
             </v-col>
         </v-row>
 
-        <pre>{{ user }}</pre>
+        <p>Vous n'avez pas de compte ?
+            <router-link :to="{ name: 'register' }">créez un compte</router-link>
+        </p>
     </v-container>
 </template>
 

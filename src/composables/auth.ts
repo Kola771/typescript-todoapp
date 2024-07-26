@@ -1,39 +1,65 @@
 import { auth } from "@/configs/firebase";
-import { signInWithEmailAndPassword, type User } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
 import { computed, ref } from "vue";
 import { useAuth as useVueUseAuth } from "@vueuse/firebase";
+import type { UserData } from "@/@types";
 
-const getUser = computed<User | null>({
-    get: () => useVueUseAuth(auth).user,
-    set: (newUser: User | null) => {
-        user.value = newUser;
-    }
-});
-const user = ref(getUser.value);
+const user = ref<UserData>(null);
+const isAuthenticated = computed<boolean>(() => !!user.value);
+
 
 const useAuth = () => {
+    async function getUser(): UserData {
+        if (user.value) {
+            // si l'utilisateur est déjà authentifié
+            return user;
+        } else {
+            // on va cherche à authentifier à travers firebase
+            const { user } = await useVueUseAuth(auth);
+            return user;
+        }
+    }
 
-const login = async (email: string, password: string) => {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password)
-        user.value = userCredential.user
-    } catch (error: any) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(`Erreur ${errorCode}: ${errorMessage}`);
+    // Initialisation de l'utilisateur
+    async function initUser() {
+        user.value = await getUser();
+    }
+
+    const login = async (email: string, password: string) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password)
+            user.value = userCredential.user
+        } catch (error: any) {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(`Erreur ${errorCode}: ${errorMessage}`);
+        }
+    };
+
+    const register = async (email: string, password: string) => {
+        const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        user.value = userCredentials.user;
+    };
+
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            user.value = null;
+        } catch (error: any) {
+            if (error.message) {
+                console.error(error);
+            }
+        }
+    };
+
+    return {
+        user,
+        isAuthenticated,
+        initUser,
+        login,
+        register,
+        logout
     }
 };
 
-const register = async () => {};
-
-const logout = async () => {};
-
-return {
-    user,
-    login,
-    register,
-    logout
-}
-};
-
-export {useAuth};
+export { useAuth };

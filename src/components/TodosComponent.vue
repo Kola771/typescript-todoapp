@@ -2,13 +2,8 @@
   <div>
     <TodoHeader @add-todo="addTodo" />
 
-    <TodoMain
-      :taches="filteredTodos"
-      @toggle-all-input="toggleAllInput"
-      @delete-todo="deleteTodo"
-      @update-todo="updateTodo"
-      @edit-todo="editTodo"
-    />
+    <TodoMain :taches="filteredTodos" @toggle-all-input="toggleAllInput" @delete-todo="deleteTodo"
+      @update-todo="updateTodo" @edit-todo="editTodo" />
 
     <TodoFooter :todos="todos" @delete-completed="deleteCompleted" />
   </div>
@@ -19,15 +14,22 @@ import TodoHeader from '@/components/TodoHeader.vue'
 import TodoMain from '@/components/TodoMain.vue'
 import TodoFooter from '@/components/TodoFooter.vue'
 import type { Todo } from '@/@types'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { nanoid } from 'nanoid'
 import { useRoute } from 'vue-router'
+import { useTodos } from '@/composables/todos'
+
+const { createTodo, changeTodo, removeTodo, getTodos, getTodo, firebaseTodos } = useTodos();
 
 const route = useRoute()
 
 // const todos = ref<Todo[]>([]);
-const todos = useStorage<Todo[]>('todoapp-todos', [])
+const todos = computed(() => firebaseTodos.value);
+
+onMounted(async () => {
+  await getTodos();
+})
 
 const filters = computed(() => {
   return {
@@ -51,37 +53,49 @@ const filteredTodos = computed(() => {
     default:
       return todos.value
   }
-})
+});
 
 // fonction d'ajout d'une tâche
-function addTodo(value: string): void {
+async function addTodo(value: string): void {
   if (!value.trim().length) return
 
   todos.value.push({
     id: nanoid(),
     title: value,
     complete: false
-  })
+  });
+
+  await createTodo(value);
 }
 
 // fonction de suppression d'une tâche
-function deleteTodo(value: Todo): void {
-  todos.value = todos.value.filter((todo) => todo !== value)
+async function deleteTodo(todo: Todo): void {
+  await removeTodo(todo);
 }
 
 // Fonction pour dire qu'une tâche est finie
-function updateTodo(todo: Todo, completedValue: boolean) {
-  todo.complete = completedValue
+async function updateTodo(todo: Todo, completedValue: boolean) {
+  changeTodo(todo, {
+    ...todo,
+    complete: completedValue
+  });
 }
 
 // Fonction pour modifier le titre d'une tâche
-function editTodo(todo: Todo, value: string) {
-  todo.title = value
+function editTodo(todo: Todo, title: string) {
+  changeTodo(todo, {
+    ...todo,
+    title: title
+  });
 }
 
 // Fonction pour retirer toutes les tâches finies
 function deleteCompleted() {
-  todos.value = todos.value.filter((todo) => !todo.complete)
+  const todosToDelete = todos.value = todos.value.filter((todo) => todo.complete === true)
+
+  todosToDelete.forEach(async (todo) => {
+    await removeTodo(todo)
+  })
 }
 
 function toggleAllInput(value: boolean) {

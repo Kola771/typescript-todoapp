@@ -1,5 +1,6 @@
 import { type FirebaseOptions, initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -16,4 +17,7 @@ const app = initializeApp(firebaseConfig)
 // Initialiser le service d'authentification et récupérer le service
 const auth = getAuth(app)
 
-export { auth }
+// Initilaiser cloud Firestore (la DB en temps réel) et récupérer le service
+const db = getFirestore(app)
+
+export { auth, db }
